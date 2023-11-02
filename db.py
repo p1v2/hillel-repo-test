@@ -9,6 +9,7 @@ logger.addHandler(logging.StreamHandler())
 
 db = SqliteDatabase('sqlite3.db')
 
+
 class BaseModel(Model):
     class Meta:
         database = db
