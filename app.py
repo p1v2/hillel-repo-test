@@ -138,15 +138,24 @@ def update_teacher_with_id(teacher_id):
         if not data:
             return jsonify({"error": "Can't get teacher's data"}), 400
 
+        validate_teacher_data(data)
+
         teacher_to_update = Teacher.get_or_none(id = teacher_id)
 
         if teacher_to_update:
-            teacher_to_update.name = data.get("name", teacher_to_update.name)
-            teacher_to_update.subject = data.get("subject", teacher_to_update.subject)
-            teacher_to_update.save()
-            return jsonify({"message": "Teacher has been updated"}), 200
+            new_name = data.get("name")
+            new_subject = data.get("subject")
+
+            if new_name.replace(" ","").isalpha():  # Проверка, что имя состоит только из букв
+                teacher_to_update.name = new_name
+                teacher_to_update.subject = new_subject
+                teacher_to_update.save()
+                return jsonify({"message": "Teacher has been updated"}), 200
+            else:
+                return jsonify({"error": "Name can only contain letters"}), 400
         else:
             return jsonify({"error": "The teacher not found"}), 404
+
 
 
 if __name__ == '__main__':

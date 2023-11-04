@@ -50,6 +50,12 @@ def validate_teacher_data(data):
     t_name = data.get("name")
     t_subject = data.get("subject")
 
+    if not t_name.replace(" ","").isalpha():
+        raise ValidationError("name has not allowed symbols")
+
+    if not t_subject.replace(" ","").isalpha():
+        raise ValidationError("subject has not allowed symbols")
+
     if not (t_name and t_subject):
         raise ValidationError("name and subject are required")
 
