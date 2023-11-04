@@ -29,9 +29,9 @@ def students_api():
         # Get name from query params
         filter_name = request.args.get("name")
 
-        students = Student.select(Student, fn.AVG(Mark.value).alias("avg_mark")).join(Mark).group_by(Student).order_by(
-            fn.AVG(Mark.value).desc())
-        #students = Student.select()
+       # students = Student.select(Student, fn.AVG(Mark.value).alias("avg_mark")).join(Mark).group_by(Student).order_by(
+           # fn.AVG(Mark.value).desc())
+        students = Student.select()
 
         if filter_name:
             students = students.where(Student.name.contains(filter_name))

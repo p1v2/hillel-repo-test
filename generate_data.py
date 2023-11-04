@@ -13,9 +13,9 @@ for student_data in students_data:
     Student.create(**student_data)
 
 teachers_data = [
-    {"name": "Teacher 1", "subject": "Math"},
-    {"name": "Teacher 2", "subject": "History"},
-    {"name": "Teacher 3", "subject": "Physics"},
+    {"name": "Teacherone", "subject": "Math"},
+    {"name": "Teachertwo", "subject": "History"},
+    {"name": "Teacherthree", "subject": "Physics"},
 ]
 
 
