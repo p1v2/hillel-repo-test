@@ -1,10 +1,11 @@
 from flask import Flask, jsonify, request
 from peewee import fn
 
-from db import Student, Mark
-from deserializators import deserialize_student_data, deserialize_mark_data
-from serializatiors import serialize_db_student, serialize_db_mark, serialize_db_student_with_marks
-from validators import validate_student_data, ValidationError, validate_mark_data
+from db import Student, Mark, Teacher
+from deserializators import deserialize_student_data, deserialize_mark_data, deserialize_teacher_data
+from serializatiors import serialize_db_student, serialize_db_mark, serialize_db_student_with_marks, \
+    serialize_db_teachers, serialize_db_teacher_with_id
+from validators import validate_student_data, ValidationError, validate_mark_data, validate_teacher_data
 
 app = Flask(__name__)
 
@@ -30,6 +31,7 @@ def students_api():
 
         students = Student.select(Student, fn.AVG(Mark.value).alias("avg_mark")).join(Mark).group_by(Student).order_by(
             fn.AVG(Mark.value).desc())
+        #students = Student.select()
 
         if filter_name:
             students = students.where(Student.name.contains(filter_name))
@@ -69,9 +71,82 @@ def marks_api():
 
         return jsonify(serialize_db_mark(mark)), 201
     if request.method == "GET":
-        marks = Mark.select(Mark, Student).join(Student)
+        marks = Mark.select(Mark, Student).join(Student).join_from(Mark,Teacher)
 
         return jsonify([serialize_db_mark(mark) for mark in marks])
+
+@app.route('/teachers', methods=["GET", "POST"])
+def teachers_api():
+    if request.method == "POST":
+
+        data = deserialize_teacher_data()
+
+        validate_teacher_data(data)
+        # validated_data["student"] = student
+
+        teacher = Teacher.create(**data)
+        # mark.student = student
+
+        return jsonify(serialize_db_teachers(teacher)), 201
+    if request.method == "GET":
+        #marks = Mark.select(Mark, Student).join(Student)
+        teachers = Teacher.select()
+
+        return jsonify([serialize_db_teachers(teacher) for teacher in teachers])
+
+@app.route('/teachers/<int:teacher_id>', methods=["GET"])
+def teacher_api(teacher_id):
+    if request.method == "GET":
+        teacher = Teacher.get_or_none(id=teacher_id)
+
+        if not teacher:
+            return jsonify({"message": "teacher not found"}), 404
+
+        return jsonify(serialize_db_teacher_with_id(teacher))
+
+@app.route('/delteacher', methods=["DELETE"])
+def del_teacher_with_data():
+    if request.method == "DELETE":
+        data = deserialize_teacher_data()
+
+        if not data:
+            return jsonify({"error": "Can`t get teacher`s data"}), 400
+
+        teacher_to_delete = Teacher.get_or_none(Teacher.name == data["name"],Teacher.subject == data["subject"])
+
+        if teacher_to_delete:
+            teacher_to_delete.delete_instance()
+            return jsonify({"message": "Teacher has been deleted"}), 200
+        else:
+            return jsonify({"error": "The teacher not found"}), 404
+
+@app.route('/delteacher_id/<int:teacher_id>', methods=["DELETE"])
+def del_teacher_with_id(teacher_id):
+    if request.method == "DELETE":
+        teacher_to_delete = Teacher.get_or_none(id=teacher_id)
+        if teacher_to_delete:
+            teacher_to_delete.delete_instance()
+            return jsonify({"message": "Teacher has been deleted"}), 200
+        else:
+            return jsonify({"error": "The teacher not found"}), 404
+
+@app.route('/updateteacher/<teacher_id>', methods=["PATCH"])
+def update_teacher_with_id(teacher_id):
+    if request.method == "PATCH":
+        data = deserialize_teacher_data()
+
+        if not data:
+            return jsonify({"error": "Can't get teacher's data"}), 400
+
+        teacher_to_update = Teacher.get_or_none(id = teacher_id)
+
+        if teacher_to_update:
+            teacher_to_update.name = data.get("name", teacher_to_update.name)
+            teacher_to_update.subject = data.get("subject", teacher_to_update.subject)
+            teacher_to_update.save()
+            return jsonify({"message": "Teacher has been updated"}), 200
+        else:
+            return jsonify({"error": "The teacher not found"}), 404
 
 
 if __name__ == '__main__':

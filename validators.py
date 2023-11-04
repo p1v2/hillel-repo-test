@@ -1,4 +1,4 @@
-from db import Student
+from db import Student, Teacher
 
 
 class ValidationError(Exception):
@@ -45,3 +45,21 @@ def validate_mark_data(data):
 
     data["student"] = student
     return data
+
+def validate_teacher_data(data):
+    t_name = data.get("name")
+    t_subject = data.get("subject")
+
+    if not (t_name and t_subject):
+        raise ValidationError("name and subject are required")
+
+    if not isinstance(t_name, str):
+        raise ValidationError("name must be string")
+    if not isinstance(t_subject, str):
+        raise ValidationError("subject must be string")
+
+    if len(t_name) < 3:
+        raise ValidationError("too short name")
+    if t_subject == "":
+        raise ValidationError("subject must not be empty")
+
