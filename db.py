@@ -24,6 +24,7 @@ class Teacher(BaseModel):
     name = CharField()
     age = IntegerField()
     subject = CharField()
+    start_of_work = DateTimeField(default=datetime.now)
 
 
 class Mark(BaseModel):
