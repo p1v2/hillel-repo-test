@@ -109,6 +109,14 @@ def teacher_api(teacher_id):
 
         return jsonify(serialize_db_student_with_marks(teacher))
 
+    if request.method == "DELETE":
+        teacher = Teacher.get_or_none(id=teacher_id)
+        teacher_delete = Teacher.delete().where(Teacher.id == teacher_id).execute()
+        if not teacher:
+            return jsonify({"message": "teacher not found"}), 404
+        else:
+            return jsonify({"message": "teacher successfully removed"}), 200
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5001, debug=True)
