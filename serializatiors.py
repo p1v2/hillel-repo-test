@@ -1,4 +1,4 @@
-from db import Student, Mark
+from db import Student, Mark, Teacher
 
 
 def serialize_db_student(student: Student):
@@ -14,6 +14,22 @@ def serialize_db_mark(mark: Mark):
         "id": mark.id,
         "value": mark.value,
         "timestamp": mark.timestamp,
+    }
+
+
+def serialize_db_teacher(teacher: Teacher):
+    return {
+        "id": teacher.id,
+        "name": teacher.name,
+        "subject": teacher.subject,
+        "timestamp": teacher.start_of_work
+    }
+
+
+def serialize_db_teacher_with_marks(teacher: Teacher):
+    return {
+        **serialize_db_teacher(teacher),
+        "marks": [serialize_db_mark(mark) for mark in teacher.marks]
     }
 
 
