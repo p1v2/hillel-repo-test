@@ -15,16 +15,16 @@ def deserialize_student_data():
 
 def deserialize_teacher_data():
     data = request.get_json()
+    payload = {}
 
-    name = data.get("name")
-    age = data.get("age")
-    subject = data.get("subject")
+    fields = ["name", "age", "subject"]
 
-    return {
-        "name": name,
-        "age": age,
-        "subject": subject
-    }
+    for field in fields:
+        value = data.get(field)
+        if value:
+            payload[field] = value
+
+    return payload
 
 
 def deserialize_mark_data():
@@ -39,5 +39,3 @@ def deserialize_mark_data():
         "student_id": student_id,
         "value": value
    }
-
-
