@@ -99,7 +99,7 @@ def teachers_api():
         return jsonify(serialize_db_student(teacher)), 201
 
 
-@app.route('/teachers/<int:teacher_id>', methods=["GET"])
+@app.route('/teachers/<int:teacher_id>', methods=["GET", "DELETE", "PATCH"])
 def teacher_api(teacher_id):
     if request.method == "GET":
         teacher = Teacher.get_or_none(id=teacher_id)
@@ -116,6 +116,12 @@ def teacher_api(teacher_id):
             return jsonify({"message": "teacher not found"}), 404
         else:
             return jsonify({"message": "teacher successfully removed"}), 200
+
+    if request.method == "PATCH":
+        teacher_update = Teacher.update(deserialize_teacher_data()).where(Teacher.id == teacher_id).execute()
+        return jsonify({"message": "failed to update "}), 404
+    else:
+        return jsonify({"message": "teacher successfully renewed "}), 200
 
 
 if __name__ == '__main__':
