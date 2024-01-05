@@ -23,6 +23,31 @@ def validate_student_data(data):
         raise ValidationError("name must not be empty")
 
 
+def validate_teacher_data(data):
+    name = data.get("name")
+    age = data.get("age")
+    subject = data.get("subject")
+    work_experience = data.get("work_experience")
+
+    if not (name and subject and work_experience and age):
+        raise ValidationError("name, age, subject and work_experience are required")
+
+    if not isinstance(age, int):
+        raise ValidationError("age must be integer")
+    if not isinstance(name, str):
+        raise ValidationError("name must be string")
+    if not isinstance(subject, str):
+        raise ValidationError("subject must be string")
+    if not isinstance(work_experience, int):
+        raise ValidationError("work_experience must be integer")
+
+    if age < 0:
+        raise ValidationError("age must be positive")
+    if name == "":
+        raise ValidationError("name must not be empty")
+
+
+
 def validate_mark_data(data):
     student_id = data.get("student_id")
     value = data.get("value")
