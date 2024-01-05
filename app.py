@@ -112,7 +112,7 @@ def teacher_api(teacher_id):
         if not teacher:
             return jsonify({"message": "teacher not found"}), 404
 
-        teacher = Teacher.update(**data)
+        Teacher.update(data).execute()
 
         return jsonify(serialize_db_teacher(teacher)), 201
 
