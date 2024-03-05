@@ -1,5 +1,6 @@
 from flask import request
 
+
 def deserialize_student_data():
     data = request.get_json()
 
@@ -14,16 +15,16 @@ def deserialize_student_data():
 
 def deserialize_teacher_data():
     data = request.get_json()
+    payload = {}
 
-    name = data.get("name")
-    age = data.get("age")
-    subject = data.get("subject")
+    fields = ["name", "age", "subject"]
+    for field in fields:
+        value = data.get(field)
+        if value:
+            payload[field] = value
 
-    return {
-        "name": name,
-        "age": age,
-        "subject": subject
-    }
+
+    return payload
 
 
 def deserialize_mark_data():
