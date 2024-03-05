@@ -3,7 +3,8 @@ from peewee import fn
 
 from db import Student, Mark, Teacher
 from deserializators import deserialize_student_data, deserialize_mark_data, deserialize_teacher_data
-from serializatiors import serialize_db_student, serialize_db_mark, serialize_db_student_with_marks
+from serializatiors import serialize_db_student, serialize_db_mark, serialize_db_student_with_marks, \
+    serialize_db_teacher
 from validators import validate_student_data, ValidationError, validate_mark_data, validate_teacher_data
 
 app = Flask(__name__)
@@ -104,8 +105,8 @@ def teacher_api(teacher_id):
 
         if not teacher:
             return jsonify({"message": "teacher not found"}), 404
-
-        return jsonify(serialize_db_student_with_marks(teacher))
+        else:
+            return jsonify(serialize_db_student_with_marks(teacher)), 200
 
 
 
