@@ -14,6 +14,7 @@ def test_student_creation():
     print(response.status_code)
     print(response.json())
 
+
 def test_student_update():
     age = 26
 
@@ -25,6 +26,7 @@ def test_student_update():
     )
     print(response.status_code)
     print(response.json())
+
 
 if __name__ == "__main__":
     test_student_update()
