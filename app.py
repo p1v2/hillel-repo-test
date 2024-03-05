@@ -97,5 +97,17 @@ def teachers_api():
         return jsonify(serialize_db_student(teacher)), 201
 
 
+@app.route('/teachers/<int:teacher_id>', methods=["GET"])
+def teacher_api(teacher_id):
+    if request.method == "GET":
+        teacher = Teacher.get_or_none(id=teacher_id)
+
+        if not teacher:
+            return jsonify({"message": "teacher not found"}), 404
+
+        return jsonify(serialize_db_student_with_marks(teacher))
+
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5001, debug=True)
